@@ -403,5 +403,5 @@ void mouseReleased()
 }
 void keyPressed()
 {
-  save(exported.png)
+  save(exported.png);
 }
