@@ -401,3 +401,7 @@ void mouseReleased()
 {
   down = false;
 }
+void keyPressed()
+{
+  save(exported.png)
+}
