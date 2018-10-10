@@ -3,6 +3,21 @@ float y1 = mouseY;
 float x2;
 float y2;
 float speed;
+float cw;
+
+float cx1;
+float cy1;
+float cx2;
+float cy2;
+float ccx;
+float ccy;
+
+
+boolean circle1 = false;
+boolean circle2 = false;
+boolean circle1a = false;
+boolean circle2a = false;
+boolean circlefinished = false;
 
 boolean rainbow = false;
 
@@ -58,6 +73,8 @@ int brownY = 450;
 int taupeX = 100;
 int taupeY = 450;
 
+int circleX = 160;
+int circleY = 450;
 
 int weight = 5; //For strokeWeight Changes Later
 
@@ -101,6 +118,26 @@ void setup()
 
 void draw()
 { 
+  //if(circle1 == true){
+  //background(0, 0, 255);
+  //}
+  if (circle1a == true) {
+    circle1 = true;
+    circle1a = false;
+  }
+  if (circle2a == true) {
+    circle2 = true;
+    circle2a = false;
+  }
+  ccx = (cx1 + cx2)/2;
+  ccy = (cy1 + cy2)/2;
+  cw = sqrt( sq(cx1-cx2) + sq(cy1-cy2));
+  if (circlefinished == true) {  
+    fill(C);
+    ellipse(ccx,ccy,cw,cw);
+    fill(255,255,255);
+    circlefinished = false;
+  }
   Rb = color(255-mouseX+60+speed,255-mouseY+20+speed,255-speed+60); //How the Rainbow Brush Chooses Colour
   //Rb = color(sq(speed),sqrt(speed)*15,mouseX*mouseY/1000);
   speed = sqrt(sq(x2 - mouseX) + sq(y2 - mouseY));
@@ -236,6 +273,8 @@ void draw()
   fill(T); //Taupe
   rect(taupeX,taupeY,30,30);
   
+  fill(255); //Circle Tool
+  ellipse(circleX,circleY,30,30);
   
   fill(255,255,255); //Clear Button
   rect(clearX,clearY,30,30);
@@ -321,8 +360,25 @@ void mousePressed() {
   C = T;
   rainbow = false;
   }
+  if (mouseX > (circleX - 15) && mouseX < (circleX + 15) && mouseY > (circleY - 15) && mouseY < (circleY + 15)) {
+  circle1a = true;
+  rainbow = false;
+  }
   
+  if(circle1 == true) {
+    cx1 = mouseX;
+    cy1 = mouseY;
+    circle2a = true;
+    circle1 = false;
+  }
+  if(circle2 == true) {
+    cx2 = mouseX;
+    cy2 = mouseY;
+    circle2 = false;
+    circlefinished = true;
+  }
   
+
   
   if (mouseX > (smoothmX - 15) && mouseX < (smoothmX + 15) && mouseY > (smoothmY - 15) && mouseY < (smoothmY + 15)) {
      smoothness = (smoothness + 1);
