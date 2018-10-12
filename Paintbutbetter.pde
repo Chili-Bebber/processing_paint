@@ -234,11 +234,11 @@ void draw()
   else {
     fill(C);
   }
+    stroke(0,0,0); 
   //Preview for brush showing colour and weight
   ellipse(prevX,prevY,weight,weight);
   
   //here's where we draw most of the UI elements
-  stroke(160,160,160); 
  
   fill(R);//Red
   rect(redX, redY, 30, 30);
