@@ -1,2 +1,2 @@
 # processing_paint
-gjsafjhsaf
+mega-bad, no-good paint program made in processing
