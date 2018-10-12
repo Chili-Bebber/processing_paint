@@ -1,3 +1,4 @@
+//positions for line drawing
 float x1 = mouseX;
 float y1 = mouseY;
 float x2;
@@ -5,6 +6,7 @@ float y2;
 float speed;
 float cw;
 
+//positions for circle tool
 float cx1;
 float cy1;
 float cx2;
@@ -12,20 +14,27 @@ float cy2;
 float ccx;
 float ccy;
 
-
+//booleans for determining the stage of the circle tool
 boolean circle1 = false;
 boolean circle2 = false;
 boolean circle1a = false;
 boolean circle2a = false;
 boolean circlefinished = false;
+boolean circledone = false;
 
+//whether or not the rainbow brush tool is on
 boolean rainbow = false;
 
+//whether or not the "pen" is "down" on the "paper"
 boolean down = false;
 
+//smoothness of line (how much the line lags behind the cursor for the purpose of making smoother curves)
 int smoothness = 1;
+//line weight variable
+int weight = 5;
 
-color B = color(0,0,255); //Colour Variables
+//Colour Variables
+color B = color(0,0,255); 
 color R = color(255,0,0);
 color G = color(0,255,0);
 color C = color(0,0,0);
@@ -39,10 +48,10 @@ color Pk = color(224, 7, 148);
 color Dg = color(12, 91, 16);
 color Br = color(89, 29, 6);
 color T = color(99, 95, 89);
-
 color Rb;
 
-int greenX = 100; //Coloured Box Loaction Variables
+//Coloured Box Loaction Variables
+int greenX = 100; 
 int greenY = 570;
 int redX = 20;
 int redY = 570;
@@ -73,10 +82,10 @@ int brownY = 450;
 int taupeX = 100;
 int taupeY = 450;
 
-int circleX = 160;
+int circleX = 160; //For Circle Button
 int circleY = 450;
 
-int weight = 5; //For strokeWeight Changes Later
+ //For strokeWeight Changes Later
 
 int quitX = 1170; //For Quit Button
 int quitY = 30;
@@ -98,13 +107,13 @@ int sIndicY = 515;
 int parabX = 180;
 int parabY = 510;
 
-int thickX = 260; //"Thickness" Title
-int thickY = 485;
-
 int prevX = 280; //Brush preview
 int prevY = 470;
 
-PFont F;
+//previous weight storage variable
+int pweight = weight;
+
+PFont F; //Font Setup
 
 void setup()
 {
@@ -112,15 +121,14 @@ void setup()
   noStroke();
   size(1200,600);
   rectMode(CENTER);
-  F = createFont("Arial", 16, true); //Smoothness Indicator Font
+  F = createFont("Arial", 16, true);
   
 }
 
 void draw()
 { 
-  //if(circle1 == true){
-  //background(0, 0, 255);
-  //}
+  
+  //firgure out state of circle tool (which of the 2 mouse clicks we're on)
   if (circle1a == true) {
     circle1 = true;
     circle1a = false;
@@ -129,52 +137,57 @@ void draw()
     circle2 = true;
     circle2a = false;
   }
+  
+  //figure out the coordinates and length/width of circle
   ccx = (cx1 + cx2)/2;
   ccy = (cy1 + cy2)/2;
   cw = sqrt( sq(cx1-cx2) + sq(cy1-cy2));
-  if (circlefinished == true) {  
-    fill(C);
-    ellipse(ccx,ccy,cw,cw);
-    fill(255,255,255);
-    circlefinished = false;
-  }
-  Rb = color(255-mouseX+60+speed,255-mouseY+20+speed,255-speed+60); //How the Rainbow Brush Chooses Colour
-  //Rb = color(sq(speed),sqrt(speed)*15,mouseX*mouseY/1000);
+  //Figure out the rainbow brush's colour
+  Rb = color(255-mouseX+60+speed,255-mouseY+20+speed,255-speed+60);
+  //distance the mouse travelled per frame i.e. speed
   speed = sqrt(sq(x2 - mouseX) + sq(y2 - mouseY));
-  
-  x1 = x1 - (x1-mouseX)/(smoothness+speed/25); //Smoothess Equation
+  //incrementing the first point of the line to be drawn this frame by a lower amount the higher the speed is
+  x1 = x1 - (x1-mouseX)/(smoothness+speed/25);
   y1 = y1 - (y1-mouseY)/(smoothness+speed/25);
   
   if(mousePressed) //The Actual Drawing Part
   {
   if(down == false) {
     down = true;
+    //draw a line between our 2 points that trail behind the mouse
     x1 = mouseX;
     y1 = mouseY;
     x2 = x1;
     y2 = y1;
   }
-  if(C == W) { // The Eraser 
-    strokeWeight(weight + 20);
-    stroke(C);
-    //line(mouseX, mouseY, pmouseX, pmouseY);
-    line(x2,y2,x1,y1);
-  }
+
   else { //The Rainbow Brush
     if (rainbow ==true) {
       strokeWeight(weight);
       stroke(Rb);
-      //line(mouseX, mouseY, pmouseX, pmouseY);
       line(x2,y2,x1,y1);
     }
-    else { //Standard Drawing Modes
+    else { //Standard Drawing Mode
       strokeWeight(weight);
       stroke(C);
-      //line(mouseX, mouseY, pmouseX, pmouseY);
       line(x2,y2,x1,y1);
     }
       
   }
+  //more circle tool housekeeping
+  if (circledone == true) {
+    weight = pweight;
+    circledone = false;
+  }
+  //drawing the circle from the circle tool
+  if (circlefinished == true) {  
+    fill(C);
+    ellipse(ccx,ccy,cw,cw);
+    fill(255,255,255);
+    circlefinished = false;
+    circledone = true;
+  }
+
   //strokeWright Changer (Increasing)
   if (mouseX > (weightpX - 15) && mouseX < (weightpX + 15) && mouseY > (weightpY - 15) && mouseY < (weightpY + 15)) {
   weight = weight + 1;
@@ -191,24 +204,19 @@ void draw()
   }
   
   }
+  //make the second point for the line drawn follow behind the first
   x2 = x2 - (x2 - x1);
   y2 = y2 - (y2 - y1);
-  // x2 = x1;
-  // y2 = y1;
   }
   strokeWeight(1); //Box that Contains Everything
   stroke(160,160,160);
-  rect(0,600,650,400);
+  rect(0,620,650,400);
   
-  stroke(0,0,0);
+  stroke(0,0,0); //Smoothness Indicator
   ellipse(parabX,parabY,30,smoothness+10);
   stroke(0,0,0,0);
   rect(parabX,parabY+50,200,100);
   
-  fill(255,255,255);
-  stroke(0,0,0,0);
-  ellipse(prevX,prevY,weight+3,weight+3);
-  stroke(160,160,160);
   if (rainbow == true) {
     fill(Rb);
   }
@@ -217,7 +225,8 @@ void draw()
   }
   
   fill(0,0,0);
-  text(smoothness, sIndicX, sIndicY); //Smoothness text and numbering system
+  //label to show current line smoothness
+  text(smoothness, sIndicX, sIndicY); 
   
   if (rainbow ==true) {
     fill(Rb);
@@ -225,10 +234,10 @@ void draw()
   else {
     fill(C);
   }
+  //Preview for brush showing colour and weight
   ellipse(prevX,prevY,weight,weight);
   
-   //Colour Picker
-  
+  //here's where we draw most of the UI elements
   stroke(160,160,160); 
  
   fill(R);//Red
@@ -300,7 +309,7 @@ void draw()
 }
 
 void mousePressed() {
-  //Color Changer
+  //if statements to figure out if the user has clicked on any of our very beatiful and appealing buttons
 
   if (mouseX > (redX - 15) && mouseX < (redX + 15) && mouseY > (redY - 15) && mouseY < (redY + 15)) {
     C = R;
@@ -363,9 +372,12 @@ void mousePressed() {
   if (mouseX > (circleX - 15) && mouseX < (circleX + 15) && mouseY > (circleY - 15) && mouseY < (circleY + 15)) {
   circle1a = true;
   rainbow = false;
+  pweight = weight;
+  weight = 0;
   }
   
-  if(circle1 == true) {
+  //advance the state of the circle tool and figure out the coordiantes of the 2 points we will use to draw
+  if(circle1 == true) { 
     cx1 = mouseX;
     cy1 = mouseY;
     circle2a = true;
@@ -376,10 +388,10 @@ void mousePressed() {
     cy2 = mouseY;
     circle2 = false;
     circlefinished = true;
+    
   }
-  
 
-  
+  //smoothness buttons
   if (mouseX > (smoothmX - 15) && mouseX < (smoothmX + 15) && mouseY > (smoothmY - 15) && mouseY < (smoothmY + 15)) {
      smoothness = (smoothness + 1);
      if (smoothness > 40) {
@@ -392,6 +404,7 @@ void mousePressed() {
     smoothness = 1;
   }
   }
+  //quit button.
   if (mouseX > (quitX - 15) && mouseX < (quitX + 15) && mouseY > (quitY - 15) && mouseY < (quitY + 15)) {
   exit();
   }
@@ -405,3 +418,4 @@ void keyPressed()
 {
   save("exported.png");
 }
+
